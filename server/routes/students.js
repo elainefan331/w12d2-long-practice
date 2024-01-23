@@ -12,9 +12,12 @@ router.get('/', async (req, res, next) => {
 
     // Phase 2A: Use query params for page & size
     // Your code here
-    let {page, size} = req.query;
-    if(!page) page = 1;
-    if(!size) size = 10;
+    let { page, size } = req.query;
+    if (!page) page = 1;
+    if (!size) size = 10;
+
+    page = parsetInt(page)
+    size = parseInt(size)
 
     // Phase 2B: Calculate limit and offset
     // Phase 2B (optional): Special case to return all students (page=0, size=0)
@@ -22,19 +25,20 @@ router.get('/', async (req, res, next) => {
     // 'Requires valid page and size params' when page or size is invalid
     // Your code here
     // if(page == 0 || size == 0) {
-        
-        let paginationObj = {};
-        paginationObj.limit = size;
-        paginationObj.offset = size * (page - 1);
+
+    let paginationObj = {};
+    paginationObj.limit = size;
+    paginationObj.offset = size * (page - 1);
     // }
 
-    if (parseInt(size) <= 0 && page <= 0) {
-        delete paginationObj.limit;
-        delete paginationObj.offset;
-        // paginationObj = {};
-    };
 
-    if(page < 0 || size < 0 || size > 200) {
+
+    if (page < 1 || size < 1 || size > 200) {
+        if (size === 0 && page === 0) {
+            delete paginationObj.limit;
+            delete paginationObj.offset;
+            return
+        };
         errorResult.errors.push('Requires valid page and size params');
         res.status(400).json(errorResult);
         return;
