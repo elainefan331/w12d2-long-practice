@@ -16,8 +16,8 @@ router.get('/', async (req, res, next) => {
     if (!page) page = 1;
     if (!size) size = 10;
 
-    page = parsetInt(page)
-    size = parseInt(size)
+    page = parseInt(page);
+    size = parseInt(size);
 
     // Phase 2B: Calculate limit and offset
     // Phase 2B (optional): Special case to return all students (page=0, size=0)
@@ -29,11 +29,13 @@ router.get('/', async (req, res, next) => {
     let paginationObj = {};
     paginationObj.limit = size;
     paginationObj.offset = size * (page - 1);
+    console.log(paginationObj)
     // }
 
 
 
     if (page < 1 || size < 1 || size > 200) {
+        // returns all records
         if (size === 0 && page === 0) {
             delete paginationObj.limit;
             delete paginationObj.offset;
@@ -116,6 +118,11 @@ router.get('/', async (req, res, next) => {
         }
     */
     // Your code here
+    result.page = page
+    if (size === 0 && page === 0) {
+        result.page = 1
+    };
+
 
     // Phase 3B:
     // Include the total number of available pages for this query as a key
