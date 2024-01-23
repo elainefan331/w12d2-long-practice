@@ -42,6 +42,7 @@ router.get('/', async (req, res, next) => {
             return
         };
         errorResult.errors.push('Requires valid page and size params');
+        errorResult.count = await Student.count()
         res.status(400).json(errorResult);
         return;
         // console.log(errorResult)
@@ -98,6 +99,7 @@ router.get('/', async (req, res, next) => {
     // Phase 3A: Include total number of results returned from the query without
     // limits and offsets as a property of count on the result
     // Note: This should be a new query
+    result.count = await Student.count()
 
     result.rows = await Student.findAll({
         attributes: ['id', 'firstName', 'lastName', 'leftHanded'],
@@ -139,6 +141,8 @@ router.get('/', async (req, res, next) => {
         }
     */
     // Your code here
+    pageCount = Math.ceil(result.count / size)
+    result.pageCount = pageCount
 
     res.json(result);
 });
