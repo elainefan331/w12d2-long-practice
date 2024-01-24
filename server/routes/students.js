@@ -75,28 +75,31 @@ router.get('/', async (req, res, next) => {
     const where = {};
 
     // Your code here
-    const {firstName, lastName, lefty} = req.query;
-    
-    
-    if(firstName) {
+    const { firstName, lastName, lefty } = req.query;
+
+
+    if (firstName) {
         where.firstName = {
             [Op.like]: `%${firstName}%`
         }
     };
-    
-    if(lastName) {
+
+    if (lastName) {
         where.lastName = {
             [Op.like]: `%${lastName}%`
         }
     }
 
-    if(lefty !== undefined) {
-        if(lefty === 'true' || lefty === 'false') {
-            where.lefty = lefty
-        } else {
+    if (lefty) {
+        if (lefty === 'true') {
+            where.leftHanded = true
+        } else if (lefty === 'false') {
+            where.leftHanded = false
+        }
+        else {
             errorResult.errors.push("Lefty should be either true or false")
         }
-        
+
     }
 
 
@@ -122,7 +125,7 @@ router.get('/', async (req, res, next) => {
     // Phase 3A: Include total number of results returned from the query without
     // limits and offsets as a property of count on the result
     // Note: This should be a new query
-    
+
 
     result.rows = await Student.findAll({
         attributes: ['id', 'firstName', 'lastName', 'leftHanded'],
