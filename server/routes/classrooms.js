@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import model(s)
-const { Classroom } = require('../db/models');
+const { Classroom, Supply } = require('../db/models');
 const { Op } = require('sequelize');
 
 // List of classrooms
@@ -76,6 +76,17 @@ router.get('/:id', async (req, res, next) => {
     // classroom
     // Optional Phase 5D: Calculate the average grade of the classroom
     // Your code here
+    const {id} = req.params;
+   
+    const supplies = await Supply.count({
+        where: {
+            classroomId: id
+        }
+    });
+    console.log(supplies)
+    
+    classroom = classroom.toJSON();
+    classroom.supplyCount = supplies;
 
     res.json(classroom);
 });
